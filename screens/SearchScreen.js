@@ -26,16 +26,16 @@ const SearchScreen = () => {
       }
   };
 
-  // Call this function when a button in the flatlist is pressed
-  const fetchMangaDetails = async (mangaId) => {
-    try {
-      const mangaDetails = await api.getMangaById(mangaId);
-      // console.log('Manga Details:', mangaDetails);
-      // setMangaDetailsArray((prevArray) => [...prevArray, mangaDetails]);
-    } catch (error) {
-      console.error('Error fetching manga details:', error.message);
-    }
-  };
+  // // Call this function when a button in the flatlist is pressed
+  // const fetchMangaDetails = async (mangaId) => {
+  //   try {
+  //     const mangaDetails = await api.getMangaById(mangaId);
+  //     // console.log('Manga Details:', mangaDetails);
+  //     // setMangaDetailsArray((prevArray) => [...prevArray, mangaDetails]);
+  //   } catch (error) {
+  //     console.error('Error fetching manga details:', error.message);
+  //   }
+  // };
 
   const navigation = useNavigation();
 
@@ -49,6 +49,8 @@ const SearchScreen = () => {
             placeholder="Enter manga title"
             value={searchQuery}
             onChangeText={(text) => setSearchQuery(text)}
+            returnKeyType='search'
+            onSubmitEditing={handleSearch}
             style={{ marginLeft: 5, marginBottom: 5, padding: 10, borderWidth: 1, borderRadius: 5 }}
           />
         </View>

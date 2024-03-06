@@ -1,5 +1,7 @@
 import * as SecureStore from 'expo-secure-store';
 import axios from 'axios';
+// import { useQuery } from 'react-query';
+
 
 const API_BASE_URL = 'https://api.mangadex.org';
 const AUTH_URL = 'https://auth.mangadex.org/realms/mangadex/protocol/openid-connect/token'
@@ -80,7 +82,10 @@ const getToken = async (key) => {
 }
 
 // GET manga search
-
+// TO-DO:
+// - Accept parameters for user preferences
+//      - Genre
+//      - Rating (safe, suggestive, erotica, pornographic)
 const searchMangas = async (titleQuery) => {
     try {
         const resp = await axios({
@@ -102,24 +107,69 @@ const searchMangas = async (titleQuery) => {
     }
 }
 
-// GET manga
+/* 
+    GET manga/{id}:
+    - Title and alt titles
+    - Description
+    - Status (Ongoing/Finished)
+    - Content Rating (Safe, Suggestive, Erotica, Pornographic)
+    - Tags (Genre)
+    - Author/Artist/Cover Art
+*/
+// TO-DO:
+// - Accept parameters for user preferences
+//      - language
 const getMangaById = async (mangaId) => {
     try {
         const resp = await axios({
             method: 'GET',
-            url: API_BASE_URL + '/manga',
+            url: API_BASE_URL + `/manga/${mangaId}`,
             params: {
-                manga: mangaId,
-                includes: [ "author", "cover_art"],
+                includes: ["author", "cover_art"],
             }
         })
 
         return resp;
     } catch (error) {
-        console.error('Error fetching manga search:', error);
+        console.error('Error fetching manga details from MangaDex API:', error);
+        throw error;
+    }
+}
+
+/*
+    GET manga/{id}/feed:
+    - Manga volumes and chapters
+
+    TO-DO:
+    - Accept parameters for user preferences
+        - Chapter descending/ascending
+        - Language
+*/
+
+const getMangaFeed = async (mangaId) => {
+    try {
+        const resp = await axios({
+            method: 'GET',
+            url: API_BASE_URL + `/manga/${mangaId}/feed`,
+            params: {
+                translatedLanguage: ['en'],
+                limit: 96,
+                includes: ['scanlation_group', 'user'],
+                order: {
+                    volume: 'desc',
+                    chapter: 'desc',
+                },
+                offset: 0,
+                contentRating: ['safe', 'suggestive', 'erotica', 'pornographic']
+            }
+        })
+
+        return resp;
+    } catch (error) {
+        console.error('Error fetching manga feed:', error);
         throw error;
     }
 }
 
 export { authUser, refreshAccessToken, setToken, getToken, searchMangas, 
-    getMangaById };
+    getMangaById, getMangaFeed };
