@@ -73,7 +73,7 @@ const SearchScreen = () => {
               <TouchableOpacity
                 onPress={() => {
                   // console.log('Item pressed:', item.id);
-                  navigation.navigate('MangaDetailScreen', {
+                  navigation.navigate('Details', {
                     mangaId: item.id
                   })
                 }}
@@ -111,7 +111,8 @@ const styles = StyleSheet.create({
     width: 43,
     height: 61,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
+    borderRadius: 5
   },
   listItem: {
     flexDirection: 'row',
