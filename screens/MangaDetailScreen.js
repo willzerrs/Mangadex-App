@@ -9,9 +9,23 @@ import TextTicker from 'react-native-text-ticker'
 const MangaDetailScreen = ({ route }) => {
   const { mangaId } = route.params || {}
   const [mangaDetails, setMangaDetails] = useState(null)
+  const [mangaStats, setMangaStats] = useState(null)
   const [chapterList, setChapterList] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [isCoverModalVisible, setCoverModal] = useState(false)
+
+  // useEffect(() => {
+  //   if (mangaId) {
+  //     api.getMangaStats(mangaId)
+  //       .then(response => {
+  //         console.log('manga id:', mangaId)
+  //         console.log('Manga Stats:', response.statistics[mangaId].rating)
+  //       })
+  //       .catch(error => {
+  //         console.error('Test Error:', error)
+  //       })
+  //   }
+  // })
 
   const toggleCoverModal = () => {
     setCoverModal(!isCoverModalVisible)
@@ -20,19 +34,31 @@ const MangaDetailScreen = ({ route }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [detailsResponse, feedResponse] = await Promise.all([
+        const [detailsResponse, feedResponse, statsResponse] = await Promise.all([
           api.getMangaById(mangaId),
-          api.getMangaFeed(mangaId)
+          api.getMangaFeed(mangaId),
+          api.getMangaStats([mangaId])
         ])
 
         if (detailsResponse.status === 200 && feedResponse.status === 200) {
           setMangaDetails(detailsResponse.data.data)
           setChapterList(feedResponse.data.data)
+          setMangaStats(statsResponse.statistics)
         } else {
           console.error('One or more responses are missing data:', detailsResponse, feedResponse)
         }
+
+        // api.getMangaStats([mangaId])
+        //   .then(response => {
+        //     console.log('manga id:', mangaId)
+        //     // console.log('Manga Stats:', response.statistics[mangaId].rating)
+        //     console.log('Manga Stats:', JSON.stringify(response))
+        //   })
+        //   .catch(error => {
+        //     console.error('Test Error:', error)
+        //   })
       } catch (error) {
-        console.error('Error fetching manga details or feed:', error.message)
+        console.error('Error fetching manga details/feed/stats:', error.message)
       } finally {
         setIsLoading(false)
       }
@@ -61,6 +87,7 @@ const MangaDetailScreen = ({ route }) => {
     - mangaId
     - mangaDetails
     - chapterList
+    - mangaStats
   */
   return (
     <ScrollView>
@@ -97,28 +124,38 @@ const MangaDetailScreen = ({ route }) => {
               <TextTicker scrollSpeed={10} repeatSpacer={20} marqueeDelay={5000} numberOfLines={1} style={{ fontSize: 20, fontWeight: 'bold', flexShrink: 1 }}>
                 {mangaDetails.attributes.title.en}
               </TextTicker>
-              <TextTicker scrollSpeed={10} repeatSpacer={20} marqueeDelay={5000} numberOfLines={1}>
+              <TextTicker scrollSpeed={10} repeatSpacer={20} marqueeDelay={5000} numberOfLines={1} style={{ fontSize: 15 }}>
                 {mangaDetails.relationships.filter((relationship) => relationship.type === 'author').map((author) => author.attributes.name).join(', ')}
               </TextTicker>
             </View>
             {/* Manga statistics */}
             <View style={{ flex: 1, backgroundColor: 'green' }}>
+              {/* Genre */}
               <TextTicker scrollSpeed={10} repeatSpacer={20} marqueeDelay={5000} numberOfLines={1}>
-                Manga statistics goes here
+                {mangaDetails.attributes.tags.filter((tags) => tags.attributes.group === 'genre').map((tag) => tag.attributes.name.en).join(', ')}
               </TextTicker>
+              <Text>
+                Rating: {mangaStats[mangaId].rating.average}
+                Status: goes here
+              </Text>
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'yellow' }}>
-              <Button mode='contained' style={{ marginRight: 10 }}>Favorite</Button>
-              <Button mode='contained' style={{ marginLeft: 10 }}>Read</Button>
+              <Button mode='contained' style={{ marginRight: 10, borderRadius: 10 }}>Favorite</Button>
+              <Button mode='contained' style={{ marginLeft: 10, borderRadius: 10 }}>Read</Button>
             </View>
           </View>
 
         </View>
 
-        {/* Chapter List View */}
-        {/* <View>
+        {/* Manga Description */}
+        <View style={{ marginBottom: 10, backgroundColor: 'violet' }}>
+          <Text>Expandable manga description goes here</Text>
+        </View>
+
+        {/* Chapters List */}
+        <View style={{ flex: 1, backgroundColor: 'brown' }}>
           <Text>Chapter Response: {chapterList.response}</Text>
-        </View> */}
+        </View>
       </View>
     </ScrollView>
   )
@@ -146,7 +183,9 @@ const styles = StyleSheet.create({
   },
   mangaDetailsContainer: {
     flexDirection: 'row',
-    height: 182
+    flex: 1,
+    height: 182,
+    marginBottom: 15
     // position: 'absolute'
   },
   modalContainer: {

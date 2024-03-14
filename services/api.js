@@ -121,7 +121,6 @@ const searchMangas = async (titleQuery) => {
     - Accept parameters for user preferences
     - language
 */
-
 const getMangaById = async (mangaId) => {
   try {
     const resp = await axios({
@@ -148,7 +147,6 @@ const getMangaById = async (mangaId) => {
         - Chapter descending/ascending
         - Language
 */
-
 const getMangaFeed = async (mangaId) => {
   try {
     const resp = await axios({
@@ -200,7 +198,30 @@ const getUserFollowedManga = async (token, limit) => {
     }
 }
 */
+
+/* GET statistics/manga:
+
+  Notes:
+  - IMPORTANT: remember to use mangaIds as a object/array
+*/
+const getMangaStats = async (mangaIds) => {
+  try {
+    const resp = await axios({
+      method: 'GET',
+      url: API_BASE_URL + '/statistics/manga',
+      params: {
+        manga: mangaIds
+      }
+    })
+
+    return resp.data
+  } catch (error) {
+    console.error('Error fetching manga statistics:', error)
+    throw error
+  }
+}
+
 export {
   authUser, refreshAccessToken, setToken, getToken, searchMangas,
-  getMangaById, getMangaFeed
+  getMangaById, getMangaFeed, getMangaStats
 }
