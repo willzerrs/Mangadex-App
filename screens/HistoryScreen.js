@@ -1,12 +1,14 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from 'react'
+import { View, Text, SafeAreaView } from 'react-native'
 
 const HistoryScreen = () => {
   return (
-    <View>
-      <Text>History Screen</Text>
-    </View>
-  );
-};
+    <SafeAreaView style={{ flex: 1 }}>
+      <View>
+        <Text>History Screen</Text>
+      </View>
+    </SafeAreaView>
+  )
+}
 
-export default HistoryScreen;
+export default HistoryScreen

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, Modal } from 'react-native'
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, Modal, Animated } from 'react-native'
 import PropTypes from 'prop-types'
 import * as api from '../services/api'
 import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -47,16 +47,6 @@ const MangaDetailScreen = ({ route }) => {
         } else {
           console.error('One or more responses are missing data:', detailsResponse, feedResponse)
         }
-
-        // api.getMangaStats([mangaId])
-        //   .then(response => {
-        //     console.log('manga id:', mangaId)
-        //     // console.log('Manga Stats:', response.statistics[mangaId].rating)
-        //     console.log('Manga Stats:', JSON.stringify(response))
-        //   })
-        //   .catch(error => {
-        //     console.error('Test Error:', error)
-        //   })
       } catch (error) {
         console.error('Error fetching manga details/feed/stats:', error.message)
       } finally {
@@ -121,6 +111,7 @@ const MangaDetailScreen = ({ route }) => {
           <View style={{ flex: 1 }}>
             {/* Manga title and author view */}
             <View style={{ flex: 1, flexDirection: 'column', backgroundColor: 'blue' }}>
+              {/* TO-DO: Change TextTicker into scrollables */}
               <TextTicker scrollSpeed={10} repeatSpacer={20} marqueeDelay={5000} numberOfLines={1} style={{ fontSize: 20, fontWeight: 'bold', flexShrink: 1 }}>
                 {mangaDetails.attributes.title.en}
               </TextTicker>
@@ -135,12 +126,12 @@ const MangaDetailScreen = ({ route }) => {
                 {mangaDetails.attributes.tags.filter((tags) => tags.attributes.group === 'genre').map((tag) => tag.attributes.name.en).join(', ')}
               </TextTicker>
               <Text>
-                Rating: {mangaStats[mangaId].rating.average}
-                Status: goes here
+                Rating: {mangaStats[mangaId].rating.average !== null ? mangaStats[mangaId].rating.average : 'n/a'} {'\n'}
+                Status: {mangaDetails.attributes.status}
               </Text>
             </View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'yellow' }}>
-              <Button mode='contained' style={{ marginRight: 10, borderRadius: 10 }}>Favorite</Button>
+              {/* <Button mode='contained' style={{ marginRight: 10, borderRadius: 10 }}>Favorite</Button> */}
               <Button mode='contained' style={{ marginLeft: 10, borderRadius: 10 }}>Read</Button>
             </View>
           </View>
@@ -149,7 +140,11 @@ const MangaDetailScreen = ({ route }) => {
 
         {/* Manga Description */}
         <View style={{ marginBottom: 10, backgroundColor: 'violet' }}>
-          <Text>Expandable manga description goes here</Text>
+          <Animated.View>
+            <View>
+              <Text>{mangaDetails.attributes.description.en}</Text>
+            </View>
+          </Animated.View>
         </View>
 
         {/* Chapters List */}
@@ -175,7 +170,7 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover', // or 'stretch' or 'contain'
+    resizeMode: 'cover', // or 'stretch'/'contain'
     justifyContent: 'center'
   },
   contentContainer: {

@@ -8,8 +8,8 @@ import * as api from '../services/api'
 
 /*
   TO-DO:
-  - Implement filter for genres/maturity rating
-  - Implement feature to search by author/artist
+  - Integrate this screen with the Home screen with MangaDex Home features.
+    - Carousel for featured mangas
 */
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('')

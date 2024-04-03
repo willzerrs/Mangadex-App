@@ -12,7 +12,8 @@ const BottomTabNavigator = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        tabBarStyle: { position: 'fixed' }
+        tabBarStyle: { position: 'fixed' },
+        headerShown: false
       }}
     >
       {/* <Tab.Screen name="Testing" component={TestingScreen} /> */}
