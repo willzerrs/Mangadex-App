@@ -221,7 +221,21 @@ const getMangaStats = async (mangaIds) => {
   }
 }
 
+const getMangaChapter = async (chapterId) => {
+  try {
+    const resp = await axios({
+      method: 'GET',
+      url: API_BASE_URL + `at-home/server/${chapterId}`
+    })
+
+    return resp.data
+  } catch (error) {
+    console.error('Error fetching chapter pages:', error)
+    throw error
+  }
+}
+
 export {
   authUser, refreshAccessToken, setToken, getToken, searchMangas,
-  getMangaById, getMangaFeed, getMangaStats
+  getMangaById, getMangaFeed, getMangaStats, getMangaChapter
 }
