@@ -10,6 +10,9 @@ import * as api from '../services/api'
   TO-DO:
   - Integrate this screen with the Home screen with MangaDex Home features.
     - Carousel for featured mangas
+      - https://www.npmjs.com/package/react-native-snap-carousel
+  - Animate stack transitions
+    - https://reactnavigation.org/docs/shared-element-transitions
 */
 const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('')

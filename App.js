@@ -6,6 +6,8 @@ import StackNavigator from './navigation/StackNavigator'
 // and there are no good fixes; only workarounds afaik
 LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered.'])
 
+// TO-DO:
+// - Themes: https://reactnavigation.org/docs/themes
 export default function App () {
   return (
     <NavigationContainer>

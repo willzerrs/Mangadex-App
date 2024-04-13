@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import PropTypes from 'prop-types'
+// TO-DO:
 // https://stackoverflow.com/questions/61809670/how-to-animate-expanding-collapsing-a-text-preview-in-react-native-with-animat
 const MangaDescription = ({ description }) => {
   const [expanded, setExpanded] = useState(false)

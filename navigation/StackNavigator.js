@@ -17,11 +17,19 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Details"
         component={MangaDetailScreen}
-        // options={({ route }) => ({ title: route.params.mangaId })}
       />
       <Stack.Screen
-        name="ChapterPage"
+        name="ChapterPages"
         component={MangaChapterScreen}
+        options={{
+          headerShown: false,
+          headerTransparent: true,
+          headerTintColor: 'white',
+          headerStyle: {
+            backgroundColor: '#222222',
+            shadowOpacity: 0
+          }
+        }}
       />
     </Stack.Navigator>
   )

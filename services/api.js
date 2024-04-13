@@ -221,11 +221,12 @@ const getMangaStats = async (mangaIds) => {
   }
 }
 
+// This returns a base url for fetching manga chapters from. Do not use the mangadex api url.
 const getMangaChapter = async (chapterId) => {
   try {
     const resp = await axios({
       method: 'GET',
-      url: API_BASE_URL + `at-home/server/${chapterId}`
+      url: API_BASE_URL + `/at-home/server/${chapterId}`
     })
 
     return resp.data

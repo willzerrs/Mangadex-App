@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import PropTypes from 'prop-types'
 
@@ -9,15 +9,17 @@ const ChaptersList = ({ chapterList }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Chapters List</Text>
       {chapterList.map((item) => (
-        // Implement these to be touchables -> get manga pages
+        // FIX: make entire row pressable.
         <View style={styles.chapterItem} key={item.id}>
-          <TouchableOpacity
+          <Pressable
             onPress={() => {
-              navigation.navigate('ChapterPage', { chapterId: item.id })
+              navigation.navigate('ChapterPages', { chapterId: item.id })
             }}>
-            <Text>{item.attributes.chapter}</Text>
-            <Text style={styles.chapterDate}>{item.attributes.publishAt}</Text>
-          </TouchableOpacity>
+            <View>
+              <Text>{item.attributes.chapter}</Text>
+              <Text style={styles.chapterDate}>{item.attributes.publishAt}</Text>
+            </View>
+          </Pressable>
         </View>
       ))}
     </View>
