@@ -21,13 +21,38 @@ const StackNavigator = () => {
       <Stack.Screen
         name="ChapterPages"
         component={MangaChapterScreen}
-        options={{
-          headerShown: false,
-          headerTransparent: true,
-          headerTintColor: 'white',
-          headerStyle: {
-            backgroundColor: '#222222',
-            shadowOpacity: 0
+        // options={{
+        //   headerShown: false,
+        //   headerTransparent: true,
+        //   headerTintColor: 'white',
+        //   headerStyle: {
+        //     backgroundColor: '#222222',
+        //     shadowOpacity: 0
+        //   }
+        // }}
+        options={(props) => {
+          // eslint-disable-next-line react/prop-types
+          if (props.route.params.source === 'ChapterPages') {
+            return {
+              animationEnabled: false,
+              headerShown: false,
+              headerTransparent: true,
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#222222',
+                shadowOpacity: 0
+              }
+            }
+          } else {
+            return {
+              headerShown: false,
+              headerTransparent: true,
+              headerTintColor: 'white',
+              headerStyle: {
+                backgroundColor: '#222222',
+                shadowOpacity: 0
+              }
+            }
           }
         }}
       />

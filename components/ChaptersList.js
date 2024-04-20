@@ -8,12 +8,12 @@ const ChaptersList = ({ chapterList }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Chapters List</Text>
-      {chapterList.map((item) => (
+      {chapterList.map((item, index) => (
         // FIX: make entire row pressable.
         <View style={styles.chapterItem} key={item.id}>
           <Pressable
             onPress={() => {
-              navigation.navigate('ChapterPages', { chapterId: item.id })
+              navigation.navigate('ChapterPages', { indexCount: index, chapterId: item.id, chapterList, source: 'ChapterList' })
             }}>
             <View>
               <Text>{item.attributes.chapter}</Text>
