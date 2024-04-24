@@ -13,7 +13,7 @@ const ChaptersList = ({ chapterList }) => {
         <View style={styles.chapterItem} key={item.id}>
           <Pressable
             onPress={() => {
-              navigation.navigate('ChapterPages', { indexCount: index, chapterId: item.id, chapterList, source: 'ChapterList' })
+              navigation.navigate('ChapterPages', { chapterIndex: index, chapterId: item.id, chapterList, source: 'ChapterList' })
             }}>
             <View>
               <Text>{item.attributes.chapter}</Text>

@@ -83,7 +83,7 @@ const MangaDetailScreen = ({ route }) => {
   return (
     <ScrollView>
       <View style={styles.container}>
-        <MangaDetails mangaDetails={mangaDetails} mangaStats={mangaStats} mangaId={mangaId} />
+        <MangaDetails mangaDetails={mangaDetails} mangaStats={mangaStats} mangaId={mangaId} chapterList={chapterList} />
         <MangaDescription description={mangaDetails.attributes.description.en} />
         <ChaptersList chapterList={chapterList} />
       </View>

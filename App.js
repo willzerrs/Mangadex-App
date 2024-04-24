@@ -1,4 +1,5 @@
-import React, { StyleSheet, LogBox } from 'react-native'
+import { useState } from 'react'
+import React, { StyleSheet, LogBox, StatusBar } from 'react-native'
 import NavigationContainer from './navigation/NavigationContainer'
 import StackNavigator from './navigation/StackNavigator'
 
@@ -9,6 +10,7 @@ LogBox.ignoreLogs(['Sending `onAnimatedValueUpdate` with no listeners registered
 // TO-DO:
 // - Themes: https://reactnavigation.org/docs/themes
 export default function App () {
+  const [backgroundColor, setBackgroundColor] = useState('white')
   return (
     <NavigationContainer>
       <StackNavigator />

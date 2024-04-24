@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, SafeAreaView, Image, ActivityIndicator, StyleSheet, Dimensions, Pressable } from 'react-native'
+import { View, Text, SafeAreaView, Image, ActivityIndicator, StyleSheet, Dimensions, Pressable, Animated } from 'react-native'
 import PropTypes from 'prop-types'
 import * as api from '../services/api'
 import Swiper from 'react-native-swiper'
@@ -22,12 +22,13 @@ const renderPagination = (index, total, context) => {
 
 const MangaChapterScreen = ({ route }) => {
   const navigation = useNavigation()
-  const chapterIndexCount = route.params.indexCount
+  const chapterIndex = route.params.chapterIndex
   const chapterId = route.params.chapterId
   const chapterList = route.params.chapterList
   const [chapterImgs, setChapterImgs] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [headerVisible, setHeaderVisible] = useState(false)
+  const [endReachedAnim] = useState(new Animated.Value(0))
 
   const fetchData = async () => {
     try {
@@ -52,7 +53,7 @@ const MangaChapterScreen = ({ route }) => {
 
   useEffect(() => {
     fetchData()
-    navigation.setOptions({ title: chapterList[chapterIndexCount].attributes.chapter })
+    navigation.setOptions({ title: chapterList[chapterIndex].attributes.chapter })
   }, [chapterId])
 
   if (isLoading) {
@@ -72,6 +73,22 @@ const MangaChapterScreen = ({ route }) => {
     return layoutMeasurement.width + contentOffset.x > contentSize.width || contentOffset.x < 0
   }
 
+  const endTextAnim = () => {
+    Animated.timing(endReachedAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true
+    }).start(() => {
+      setTimeout(() => {
+        Animated.timing(endReachedAnim, {
+          toValue: 0,
+          duration: 200,
+          useNativeDriver: true
+        }).start()
+      }, 2000)
+    })
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
       <Swiper
@@ -85,14 +102,14 @@ const MangaChapterScreen = ({ route }) => {
             // - When navigating to prev, set page index to last
             // Navigate using reverse index b/c chapter list is in reverse order
             if (nativeEvent.contentOffset.x + nativeEvent.layoutMeasurement.width > nativeEvent.contentSize.width) {
-              console.log('past end reached.')
-              if (chapterIndexCount - 1 >= 0 && chapterIndexCount - 1 <= chapterList.length - 1) {
-                navigation.replace('ChapterPages', { indexCount: chapterIndexCount - 1, chapterId: chapterList[chapterIndexCount - 1].id, chapterList, source: 'ChapterPages' })
+              if (chapterIndex - 1 >= 0 && chapterIndex - 1 <= chapterList.length - 1) {
+                navigation.replace('ChapterPages', { chapterIndex: chapterIndex - 1, chapterId: chapterList[chapterIndex - 1].id, chapterList, source: 'ChapterPages' })
+              } else {
+                endTextAnim()
               }
             } else if (nativeEvent.contentOffset.x < 0) {
-              console.log('past beginning reached.')
-              if (chapterIndexCount + 1 <= chapterList.length - 1) {
-                navigation.replace('ChapterPages', { indexCount: chapterIndexCount + 1, chapterId: chapterList[chapterIndexCount + 1].id, chapterList, source: 'ChapterPages' })
+              if (chapterIndex + 1 <= chapterList.length - 1) {
+                navigation.replace('ChapterPages', { chapterIndex: chapterIndex + 1, chapterId: chapterList[chapterIndex + 1].id, chapterList, source: 'ChapterPages' })
               }
             }
           }
@@ -107,11 +124,21 @@ const MangaChapterScreen = ({ route }) => {
         {chapterImgs.map((imageUrl, index) => (
           <View style={styles.slide} key={index}>
             <Pressable onPress={() => toggleHeaderVisibility()}>
-              <Image style={styles.image} source={{ uri: imageUrl }} />
+              <Image
+                style={styles.image}
+                source={{ uri: imageUrl }}
+                onLoadStart={() => (
+                  <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#ff6444" />
+                  </View>
+                )} />
             </Pressable>
           </View>
         ))}
       </Swiper>
+      <Animated.View pointerEvents="none" style={[styles.endAnimBox, { opacity: endReachedAnim }]}>
+        <Text style={{ color: 'white', textAlign: 'center' }}>End Reached</Text>
+      </Animated.View>
     </SafeAreaView >
   )
 }
@@ -119,7 +146,7 @@ const MangaChapterScreen = ({ route }) => {
 MangaChapterScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      indexCount: PropTypes.number.isRequired,
+      chapterIndex: PropTypes.number.isRequired,
       chapterId: PropTypes.string.isRequired,
       chapterList: PropTypes.array.isRequired
     })
@@ -159,6 +186,17 @@ const styles = StyleSheet.create({
   paginationText: {
     color: 'white',
     fontSize: 16
+  },
+  endAnimBox: {
+    position: 'absolute',
+    top: '50%',
+    left: '35%',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderColor: 'rgba(0, 0, 0, 0.5)',
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 5,
+    width: 120
   }
 })
 
