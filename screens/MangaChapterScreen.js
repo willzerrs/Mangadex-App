@@ -29,6 +29,7 @@ const MangaChapterScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [headerVisible, setHeaderVisible] = useState(false)
   const [endReachedAnim] = useState(new Animated.Value(0))
+  const [pageLoadingMap, setPageLoadingMap] = useState({})
 
   const fetchData = async () => {
     try {
@@ -89,6 +90,13 @@ const MangaChapterScreen = ({ route }) => {
     })
   }
 
+  const togglePageLoading = (index) => {
+    setPageLoadingMap(prevLoadingMap => ({
+      ...prevLoadingMap,
+      [index]: !prevLoadingMap[index]
+    }))
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
       <Swiper
@@ -127,11 +135,23 @@ const MangaChapterScreen = ({ route }) => {
               <Image
                 style={styles.image}
                 source={{ uri: imageUrl }}
-                onLoadStart={() => (
-                  <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#ff6444" />
-                  </View>
-                )} />
+                onLoadStart={() => togglePageLoading(index)}
+                onLoadEnd={() => togglePageLoading(index)}
+              />
+              {pageLoadingMap[index] && (
+                <View style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)'
+                }}>
+                  <ActivityIndicator size="large" color="#ff6444" />
+                </View>
+              )}
             </Pressable>
           </View>
         ))}
@@ -164,6 +184,7 @@ const styles = StyleSheet.create({
   },
   slide: {
     flex: 1,
+    position: 'relative',
     justifyContent: 'center',
     alignItems: 'center'
   },

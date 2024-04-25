@@ -1,6 +1,5 @@
 import React from 'react'
 import { View, Text, StyleSheet, Button } from 'react-native'
-// import { Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import PropTypes from 'prop-types'
 import MangaCover from './MangaCover'
