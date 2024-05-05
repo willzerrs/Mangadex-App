@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Button } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import PropTypes from 'prop-types'
 import MangaCover from './MangaCover'
+import commonStyles from '../styles/CommonStyles'
 
 const MangaDetails = ({ mangaId, mangaDetails, mangaStats, chapterList }) => {
   const navigation = useNavigation()
@@ -14,13 +15,13 @@ const MangaDetails = ({ mangaId, mangaDetails, mangaStats, chapterList }) => {
 
       <View style={styles.detailsContainer}>
         {/* Change title, author, and genres to horizontally scrollables */}
-        <Text style={styles.title} numberOfLines={2}>{mangaDetails.attributes.title.en}</Text>
-        <Text style={styles.author} numberOfLines={1}>{mangaDetails.relationships.filter(rel => rel.type === 'author').map(author => author.attributes.name).join(', ')}</Text>
-        <Text style={styles.genres} numberOfLines={1}>{mangaDetails.attributes.tags.filter(tag => tag.attributes.group === 'genre').map(tag => tag.attributes.name.en).join(', ')}</Text>
-        <Text style={styles.rating}>Rating: {mangaStats[mangaId]?.rating?.average ?? 'n/a'}</Text>
-        <Text style={styles.status}>Status: {mangaDetails.attributes.status}</Text>
+        <Text style={[commonStyles.text, styles.title]} numberOfLines={2}>{mangaDetails.attributes.title.en}</Text>
+        <Text style={[commonStyles.text, styles.author]} numberOfLines={1}>{mangaDetails.relationships.filter(rel => rel.type === 'author').map(author => author.attributes.name).join(', ')}</Text>
+        <Text style={[commonStyles.text, styles.genres]} numberOfLines={1}>{mangaDetails.attributes.tags.filter(tag => tag.attributes.group === 'genre').map(tag => tag.attributes.name.en).join(', ')}</Text>
+        <Text style={[commonStyles.text, styles.rating]}>Rating: {mangaStats[mangaId]?.rating?.average ?? 'n/a'}</Text>
+        <Text style={[commonStyles.text, styles.status]}>Status: {mangaDetails.attributes.status}</Text>
         <View style={styles.buttonContainer}>
-          <Button title="Read" onPress={() => {
+          <Button title="Read" color='#ff6444' onPress={() => {
             if (chapterList.length > 0) {
               navigation.navigate('ChapterPages', { chapterIndex: chapterList.length - 1, chapterId: chapterList[chapterList.length - 1].id, chapterList, source: 'ChapterList' })
             }
@@ -35,7 +36,7 @@ MangaDetails.propTypes = {
   mangaId: PropTypes.string.isRequired,
   mangaDetails: PropTypes.object.isRequired,
   mangaStats: PropTypes.object.isRequired,
-  chapterList: PropTypes.array.isRequired
+  chapterList: PropTypes.object.isRequired
 }
 
 const styles = StyleSheet.create({

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native'
 import PropTypes from 'prop-types'
+import commonStyles from '../styles/CommonStyles'
 // TO-DO:
 // https://stackoverflow.com/questions/61809670/how-to-animate-expanding-collapsing-a-text-preview-in-react-native-with-animat
 const MangaDescription = ({ description }) => {
@@ -29,10 +30,10 @@ const MangaDescription = ({ description }) => {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.descriptionContainer, { height: animatedHeight }]}>
-        <Text style={styles.descriptionText}>{description}</Text>
+        <Text style={[commonStyles.text, styles.descriptionText]}>{description}</Text>
       </Animated.View>
       <TouchableOpacity onPress={toggleDescription}>
-        <Text style={styles.toggleButton}>{expanded ? 'Show less' : 'Show more'}</Text>
+        <Text style={[styles.toggleButton, commonStyles.mdOrange]}>{expanded ? 'Show less' : 'Show more'}</Text>
       </TouchableOpacity>
     </View>
   )

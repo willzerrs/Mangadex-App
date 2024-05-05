@@ -139,7 +139,7 @@ const getMangaById = async (mangaId) => {
 }
 
 /*
-    GET manga/{id}/feed:
+    GET manga/{id}/aggregate:
     - Manga volumes and chapters
 
     TO-DO:
@@ -147,21 +147,13 @@ const getMangaById = async (mangaId) => {
         - Chapter descending/ascending
         - Language
 */
-const getMangaFeed = async (mangaId) => {
+const getMangaAggregate = async (mangaId) => {
   try {
     const resp = await axios({
       method: 'GET',
-      url: API_BASE_URL + `/manga/${mangaId}/feed`,
+      url: API_BASE_URL + `/manga/${mangaId}/aggregate`,
       params: {
-        translatedLanguage: ['en'],
-        limit: 96,
-        includes: ['scanlation_group', 'user'],
-        order: {
-          volume: 'desc',
-          chapter: 'desc'
-        },
-        offset: 0,
-        contentRating: ['safe', 'suggestive', 'erotica', 'pornographic']
+        translatedLanguage: ['en']
       }
     })
 
@@ -238,5 +230,5 @@ const getMangaChapter = async (chapterId) => {
 
 export {
   authUser, refreshAccessToken, setToken, getToken, searchMangas,
-  getMangaById, getMangaFeed, getMangaStats, getMangaChapter
+  getMangaById, getMangaAggregate, getMangaStats, getMangaChapter
 }

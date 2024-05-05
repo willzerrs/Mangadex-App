@@ -22,6 +22,7 @@ const renderPagination = (index, total, context) => {
 
 const MangaChapterScreen = ({ route }) => {
   const navigation = useNavigation()
+  const volumeIndex = route.params.volumeIndex
   const chapterIndex = route.params.chapterIndex
   const chapterId = route.params.chapterId
   const chapterList = route.params.chapterList
@@ -54,7 +55,7 @@ const MangaChapterScreen = ({ route }) => {
 
   useEffect(() => {
     fetchData()
-    navigation.setOptions({ title: chapterList[chapterIndex].attributes.chapter })
+    navigation.setOptions({ title: chapterIndex })
   }, [chapterId])
 
   if (isLoading) {
@@ -97,6 +98,65 @@ const MangaChapterScreen = ({ route }) => {
     }))
   }
 
+  function findPreviousChapter (currentVolume, currentChapter) {
+    const volumeKeys = Object.keys(chapterList)
+    const chapterKeys = Object.keys(chapterList[currentVolume].chapters)
+
+    const currentChapterIndex = chapterKeys.indexOf(currentChapter)
+    if (currentChapterIndex > 0) {
+      const previousChapterNumber = chapterKeys[currentChapterIndex - 1]
+      return {
+        volume: currentVolume,
+        number: previousChapterNumber,
+        id: chapterList[currentVolume].chapters[previousChapterNumber].id
+      }
+    } else {
+      const currentVolumeIndex = volumeKeys.indexOf(currentVolume)
+      if (currentVolumeIndex > 0) {
+        const previousVolume = volumeKeys[currentVolumeIndex - 1]
+        const previousVolumeChapters = Object.keys(
+          chapterList[previousVolume].chapters
+        )
+        const previousChapterNumber =
+          previousVolumeChapters[previousVolumeChapters.length - 1]
+        return {
+          volume: previousVolume,
+          number: previousChapterNumber,
+          id: chapterList[previousVolume].chapters[previousChapterNumber].id
+        }
+      }
+    }
+    return null
+  }
+
+  function findNextChapter (currentVolume, currentChapter) {
+    const volumeKeys = Object.keys(chapterList)
+    const chapterKeys = Object.keys(chapterList[currentVolume].chapters)
+
+    const currentChapterIndex = chapterKeys.indexOf(currentChapter)
+    if (currentChapterIndex < chapterKeys.length - 1) {
+      const nextChapterNumber = chapterKeys[currentChapterIndex + 1]
+      return {
+        volume: currentVolume,
+        number: nextChapterNumber,
+        id: chapterList[currentVolume].chapters[nextChapterNumber].id
+      }
+    } else {
+      const currentVolumeIndex = volumeKeys.indexOf(currentVolume)
+      if (currentVolumeIndex < volumeKeys.length - 1) {
+        const nextVolume = volumeKeys[currentVolumeIndex + 1]
+        const nextVolumeChapters = Object.keys(chapterList[nextVolume].chapters)
+        const nextChapterNumber = nextVolumeChapters[0]
+        return {
+          volume: nextVolume,
+          number: nextChapterNumber,
+          id: chapterList[nextVolume].chapters[nextChapterNumber].id
+        }
+      }
+    }
+    return null
+  }
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }}>
       <Swiper
@@ -108,16 +168,19 @@ const MangaChapterScreen = ({ route }) => {
           if (isPastEnd(nativeEvent)) {
             // TO-DO:
             // - When navigating to prev, set page index to last
-            // Navigate using reverse index b/c chapter list is in reverse order
             if (nativeEvent.contentOffset.x + nativeEvent.layoutMeasurement.width > nativeEvent.contentSize.width) {
-              if (chapterIndex - 1 >= 0 && chapterIndex - 1 <= chapterList.length - 1) {
-                navigation.replace('ChapterPages', { chapterIndex: chapterIndex - 1, chapterId: chapterList[chapterIndex - 1].id, chapterList, source: 'ChapterPages' })
+              const nextChap = findNextChapter(volumeIndex, chapterIndex)
+              if (nextChap) {
+                navigation.replace('ChapterPages', { volumeIndex: nextChap.volume, chapterIndex: nextChap.number, chapterId: nextChap.id, chapterList, source: 'ChapterPages' })
               } else {
                 endTextAnim()
               }
             } else if (nativeEvent.contentOffset.x < 0) {
-              if (chapterIndex + 1 <= chapterList.length - 1) {
-                navigation.replace('ChapterPages', { chapterIndex: chapterIndex + 1, chapterId: chapterList[chapterIndex + 1].id, chapterList, source: 'ChapterPages' })
+              const prevChap = findPreviousChapter(volumeIndex, chapterIndex)
+              if (prevChap) {
+                navigation.replace('ChapterPages', { volumeIndex: prevChap.volume, chapterIndex: prevChap.number, chapterId: prevChap.id, chapterList, source: 'ChapterPages' })
+              } else {
+                console.log('no prev chapter')
               }
             }
           }
@@ -166,9 +229,10 @@ const MangaChapterScreen = ({ route }) => {
 MangaChapterScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      chapterIndex: PropTypes.number.isRequired,
+      volumeIndex: PropTypes.string.isRequired,
+      chapterIndex: PropTypes.string.isRequired,
       chapterId: PropTypes.string.isRequired,
-      chapterList: PropTypes.array.isRequired
+      chapterList: PropTypes.object.isRequired
     })
   })
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 // eslint-disable-next-line no-unused-vars
-import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, Modal, Animated } from 'react-native'
+import { View, Text, ActivityIndicator, StyleSheet, ScrollView, Image, Modal, Animated, SafeAreaView } from 'react-native'
 import PropTypes from 'prop-types'
 import * as api from '../services/api'
 // import { TouchableOpacity } from 'react-native-gesture-handler'
@@ -19,37 +19,37 @@ const MangaDetailScreen = ({ route }) => {
   const [isLoading, setIsLoading] = useState(true)
 
   // useEffect(() => {
-  //   if (mangaId) {
-  //     api.getMangaStats(mangaId)
-  //       .then(response => {
-  //         console.log('manga id:', mangaId)
-  //         console.log('Manga Stats:', response.statistics[mangaId].rating)
-  //       })
-  //       .catch(error => {
-  //         console.error('Test Error:', error)
-  //       })
+  //   try {
+  //     if (mangaId) {
+  //       api.getMangaAggregate(mangaId)
+  //         .then(response => {
+  //           console.log('Response:', response.data.volumes)
+  //           console.log('type of:', typeof response.data.volumes)
+  //         })
+  //         .catch(error => {
+  //           console.error('Test Error:', error)
+  //         })
+  //     }
+  //   } finally {
+  //     setIsLoading(false)
   //   }
   // })
-
-  // const toggleCoverModal = () => {
-  //   setCoverModal(!isCoverModalVisible)
-  // }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [detailsResponse, feedResponse, statsResponse] = await Promise.all([
+        const [detailsResponse, aggregateResponse, statsResponse] = await Promise.all([
           api.getMangaById(mangaId),
-          api.getMangaFeed(mangaId),
+          api.getMangaAggregate(mangaId),
           api.getMangaStats([mangaId])
         ])
 
-        if (detailsResponse.status === 200 && feedResponse.status === 200) {
+        if (detailsResponse.status === 200 && aggregateResponse.status === 200) {
           setMangaDetails(detailsResponse.data.data)
-          setChapterList(feedResponse.data.data)
+          setChapterList(aggregateResponse.data.volumes)
           setMangaStats(statsResponse.statistics)
         } else {
-          console.error('One or more responses are missing data:', detailsResponse, feedResponse)
+          console.error('One or more responses are missing data:', detailsResponse, aggregateResponse)
         }
       } catch (error) {
         console.error('Error fetching manga details/feed/stats:', error.message)
@@ -70,24 +70,25 @@ const MangaDetailScreen = ({ route }) => {
   }
 
   /*
-    TO-DO:
-    - Implement ImageBackground for cover art
-    - Title should be toggelable if it's too long to expand
-
-    variables:
-    - mangaId
-    - mangaDetails
-    - chapterList
-    - mangaStats
+  TO-DO:
+  - Implement ImageBackground for cover art
+  - Title should be toggelable if it's too long to expand
+  - Animate the header to increase opacity as you scroll
+    - https://medium.com/appandflow/react-native-scrollview-animated-header-10a18cb9469e#.4m2xjqd23
+  variables:
+  - mangaId
+  - mangaDetails
+  - chapterList
+  - mangaStats
   */
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView style={styles.container}>
         <MangaDetails mangaDetails={mangaDetails} mangaStats={mangaStats} mangaId={mangaId} chapterList={chapterList} />
         <MangaDescription description={mangaDetails.attributes.description.en} />
         <ChaptersList chapterList={chapterList} />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   )
 }
 

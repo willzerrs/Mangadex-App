@@ -4,6 +4,7 @@ import LibraryScreen from '../screens/LibraryScreen'
 import HistoryScreen from '../screens/HistoryScreen'
 import SettingsScreen from '../screens/SettingsScreen'
 import SearchScreen from '../screens/SearchScreen'
+import commonStyles from '../styles/CommonStyles'
 // import TestingScreen from '../screens/TestingScreen';
 
 const Tab = createBottomTabNavigator()
@@ -13,6 +14,7 @@ const BottomTabNavigator = () => {
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: { position: 'fixed' },
+        tabBarActiveTintColor: commonStyles.mdOrange.color,
         headerShown: false
       }}
     >

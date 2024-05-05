@@ -3,6 +3,7 @@ import React from 'react'
 import MangaDetailScreen from '../screens/MangaDetailScreen'
 import BottomTabNavigator from './BottomTabNavigator'
 import MangaChapterScreen from '../screens/MangaChapterScreen'
+import commonStyles from '../styles/CommonStyles'
 
 const Stack = createStackNavigator()
 
@@ -17,31 +18,28 @@ const StackNavigator = () => {
       <Stack.Screen
         name="Details"
         component={MangaDetailScreen}
+        options={{
+          headerShown: false,
+          headerTransparent: true,
+          headerTitle: '',
+          headerTintColor: commonStyles.mdOrange.color
+        }}
       />
       <Stack.Screen
         name="ChapterPages"
         component={MangaChapterScreen}
-        // options={{
-        //   headerShown: false,
-        //   headerTransparent: true,
-        //   headerTintColor: 'white',
-        //   headerStyle: {
-        //     backgroundColor: '#222222',
-        //     shadowOpacity: 0
-        //   }
-        // }}
         options={(props) => {
           // eslint-disable-next-line react/prop-types
           if (props.route.params.source === 'ChapterPages') {
             return {
               animationEnabled: false,
               headerShown: false,
-              headerTransparent: true,
-              headerTintColor: 'white',
-              headerStyle: {
-                backgroundColor: '#222222',
-                shadowOpacity: 0
-              }
+              headerTransparent: true
+              // headerTintColor: 'white',
+              // headerStyle: {
+              //   backgroundColor: '#222222',
+              //   shadowOpacity: 0
+              // }
             }
           } else {
             return {
